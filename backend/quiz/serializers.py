@@ -19,14 +19,7 @@ class QuestionSerializer(serializers.ModelSerializer):
             'id',
             'question',
             'answer',
-            'choices'
+            'choices',
         ]
-        read_only_fields = ('answer',)
         depth = 1
 
-    # def create(self, validated_data):
-    #     answers_data = validated_data.pop('answers')
-    #     question = Question.objects.create(**validated_data)
-    #     for answer_data in answers_data:
-    #         Answer.objects.create(**answer_data)
-    #     return question

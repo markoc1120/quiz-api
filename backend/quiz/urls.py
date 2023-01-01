@@ -9,7 +9,7 @@ router.register('questions', viewsets.QuestionsViewSet, basename='question')
 router.register('answers', viewsets.AnswersViewSet, basename='answer')
 
 urlpatterns = [
-    path('<int:pk>/', views.QuestionDetailAPIView.as_view()),
+    #path('<int:pk>/', views.QuestionDetailAPIView.as_view()),
     #path('', views.QuestionListCreateAPIView.as_view()),
     path('', include(router.urls)),
 ]
