@@ -4,5 +4,5 @@ endpoint = "http://localhost:8001/api/"
 
 data = requests.get(endpoint)
 
-print(data.content)
+print(data.json())
 
