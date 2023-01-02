@@ -9,7 +9,7 @@ class Answer(models.Model):
 
 
 class Question(models.Model):
-    question = models.CharField(max_length=255)
-    answer = models.OneToOneField(Answer, on_delete=models.CASCADE,
+    question = models.CharField(max_length=255, unique=True)
+    answer = models.ForeignKey(Answer, on_delete=models.CASCADE,
                                   related_name='correct_answer')
     choices = models.ManyToManyField(Answer, related_name='choices')

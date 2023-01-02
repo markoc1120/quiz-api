@@ -1,12 +1,15 @@
-from rest_framework import viewsets
+from rest_framework import viewsets, serializers
 from rest_framework.response import Response
 
 from .models import Answer, Question
 from .serializers import AnswerSerializer, QuestionSerializer
 from drf_spectacular.utils import extend_schema, OpenApiExample
 
+descr = '{"question": "Question", "answer": "Correct answer", "choices": [{"text": "Other answer"}, {"text": "Other answer"}, {"text": "Other answer"}]}'
+
 
 class QuestionsViewSet(viewsets.ModelViewSet):
+    queryset = Question.objects.all()
     serializer_class = QuestionSerializer
     http_method_names = ['get', 'post', 'put', 'delete']
 
@@ -20,8 +23,7 @@ class QuestionsViewSet(viewsets.ModelViewSet):
         examples=[
             OpenApiExample(
                 'Query 1',
-                description='longer description',
-                value='{"question": "Question", "answer": "Correct answer", "choices": [{"text": "Other answer"}, {"text": "Other answer"}, {"text": "Other answer"}]}'
+                value=descr
             ),
         ],
     )
@@ -30,6 +32,9 @@ class QuestionsViewSet(viewsets.ModelViewSet):
         correct_answer = data['answer']
 
         new_correct_answer = Answer.objects.get_or_create(text=correct_answer)
+
+        if Question.objects.filter(question=data['question']).exists():
+            raise serializers.ValidationError(f"{data['question']} already exists.")
 
         new_question = Question.objects.create(question=data['question'], answer=new_correct_answer[0])
 
@@ -50,8 +55,7 @@ class QuestionsViewSet(viewsets.ModelViewSet):
         examples=[
             OpenApiExample(
                 'Query 1',
-                description='longer description',
-                value='{"question": "Question", "answer": "Correct answer", "choices": [{"text": "Other answer"}, {"text": "Other answer"}, {"text": "Other answer"}]}'
+                value=descr
             ),
         ],
     )
@@ -78,12 +82,3 @@ class QuestionsViewSet(viewsets.ModelViewSet):
         serializer = QuestionSerializer(question_obj)
 
         return Response(serializer.data)
-
-
-class AnswersViewSet(viewsets.ModelViewSet):
-    serializer_class = AnswerSerializer
-    http_method_names = ['get', 'post', 'put', 'delete']
-
-    def get_queryset(self):
-        answer = Answer.objects.all()
-        return answer
